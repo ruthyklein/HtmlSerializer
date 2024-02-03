@@ -39,23 +39,6 @@ namespace HtmlSerializer
             }
         }
 
-        public IEnumerable<HtmlElement> DescendantsAndSelf()
-        {
-            Queue<HtmlElement> queue = new Queue<HtmlElement>();
-            queue.Enqueue(this);
-
-            while (queue.Count > 0)
-            {
-                var currentElement = queue.Dequeue();
-                yield return currentElement;
-
-                foreach (var child in currentElement.Children)
-                {
-                    queue.Enqueue(child);
-                }
-            }
-        }
-
         public IEnumerable<HtmlElement> Ancestors()
         {
             var currentElement = this.Parent;
@@ -70,15 +53,13 @@ namespace HtmlSerializer
         public static IEnumerable<HtmlElement> FindElementsBySelector(HtmlElement element, Selector selector)
         {
             var results = new HashSet<HtmlElement>();
-
             FindElementsBySelectorRecursive(element, selector, results);
-
             return results;
         }
 
         private static void FindElementsBySelectorRecursive(HtmlElement element, Selector selector, HashSet<HtmlElement> results)
         {
-            if (element.MatchesSelector(selector))
+            if (!results.Contains(element) && element.MatchesSelector(selector))
             {
                 results.Add(element);
             }
@@ -91,11 +72,14 @@ namespace HtmlSerializer
 
         private bool MatchesSelector(Selector selector)
         {
-            return
-                (string.IsNullOrEmpty(selector.TagName) || this.Name == selector.TagName) &&
-                (string.IsNullOrEmpty(selector.Id) || this.Id == selector.Id) &&
-                (selector.Classes.All(cls => this.Classes.Contains(cls)));
+            return 
+            (string.IsNullOrEmpty(selector.TagName) || this.Name == selector.TagName) &&
+            (string.IsNullOrEmpty(selector.Id) || this.Id == selector.Id) &&
+            (selector.Classes.All(cls => this.Classes.Contains(cls)));
         }
     }
+
+
 }
-}
+
+

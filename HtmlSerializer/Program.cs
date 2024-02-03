@@ -4,7 +4,6 @@ using System.Text.RegularExpressions;
 using System.Xml.Linq;
 
 //loading an html page:
-
 static async Task<string> Load(string url)
 {
     HttpClient client = new HttpClient();
@@ -15,14 +14,9 @@ static async Task<string> Load(string url)
 var html = await Load("https://rubybot.co.il/he/features/chat");
 var cleanHtml = new Regex("\\s+").Replace(html, " ");
 var htmlLines = new Regex("<(.*?)>").Split(cleanHtml).Where(s => s.Length > 0).ToList();
-
 var htmlTree = BuildHtmlTree(htmlLines);
 
 // The HTML tree is now constructed, you can manipulate or traverse it as needed
-
-Console.WriteLine("HTML Tree construction completed.");
-PrintHtmlTree(htmlTree);
-
 static HtmlElement BuildHtmlTree(List<string> htmlLines)
 {
     var root = new HtmlElement();
@@ -94,50 +88,84 @@ static HtmlElement BuildHtmlTree(List<string> htmlLines)
 
     return root;
 }
+//static void PrintHtmlElement(HtmlElement element, string indent = "")
+//{
+//    Console.Write($"{indent}<{element.Name}>");
 
-static void PrintHtmlTree(HtmlElement element, string indent = "")
-{
-   // Console.Write($"{indent}<{element.Name}");
+//    if (!string.IsNullOrEmpty(element.Id))
+//    {
+//        Console.Write($" id=\"{element.Id}\"");
+//    }
 
-    //if (!string.IsNullOrEmpty(element.Id))
-    //{
-    //    Console.Write($" id=\"{element.Id}\"");
-    //}
+//    if (element.Classes.Any())
+//    {
+//        Console.Write($" class=\"{string.Join(" ", element.Classes)}\"");
+//    }
 
-    //if (element.Classes.Any())
-    //{
-    //    Console.Write($" class=\"{string.Join(" ", element.Classes)}\"");
-    //}
+//    if (element.Attributes.Any())
+//    {
+//        Console.Write($" {string.Join(" ", element.Attributes)}");
+//    }
+//    Console.WriteLine($"{indent}</{element.Name}>");
+//}
+//static void PrintHtmlTree(HtmlElement element, string indent = "")
+//{
+//    Console.Write($"{indent}<{element.Name}");
 
-    //if (element.Attributes.Any())
-    //{
-    //    Console.Write($" {string.Join(" ", element.Attributes)}");
-    //}
+//    if (!string.IsNullOrEmpty(element.Id))
+//    {
+//        Console.Write($" id=\"{element.Id}\"");
+//    }
+
+//    if (element.Classes.Any())
+//    {
+//        Console.Write($" class=\"{string.Join(" ", element.Classes)}\"");
+//    }
+
+//    if (element.Attributes.Any())
+//    {
+//        Console.Write($" {string.Join(" ", element.Attributes)}");
+//    }
 
 
-    Console.WriteLine($"{indent}</{element.Name}>");
+//    Console.WriteLine($"{indent}</{element.Name}>");
 
-    // Console.WriteLine(">");
+//    // Console.WriteLine(">");
 
-    if (element.Children.Any())
-    {
-        foreach (var child in element.Children)
-        {
-            PrintHtmlTree(child, indent + "  ");
-        }
-    }
-    //else if (!string.IsNullOrEmpty(element.InnerHtml))
-    //{
-    //    Console.WriteLine($"{indent}  {element.InnerHtml}");
-    //}
+//    if (element.Children.Any())
+//    {
+//        foreach (var child in element.Children)
+//        {
+//            PrintHtmlTree(child, indent + "  ");
+//        }
+//    }
+//    //else if (!string.IsNullOrEmpty(element.InnerHtml))
+//    //{
+//    //    Console.WriteLine($"{indent}  {element.InnerHtml}");
+//    //}
 
-    //Console.WriteLine($"{indent}</{element.Name}>");
-}
+//    //Console.WriteLine($"{indent}</{element.Name}>");
+//}
 
-Console.WriteLine("--------------------------------------------------------------");
-string queryString = "div#mydiv.class-name";
-var selector = Selector.FromQueryString(queryString);
-Console.WriteLine(selector);
+
+//Console.WriteLine("HTML Tree construction completed.");
+////PrintHtmlTree(htmlTree);
+//Console.WriteLine("-------------9----------------------------------------------");
+string queryString0 = "div #RT .MuiBox-root .Mui";//31 results
+//string queryString1 = "button .MuiButtonBase-root";//5 results
+//string queryString2 = "div.layout-wrapper";//only 1 result
+
+var selector = Selector.FromQueryString(queryString0);
+Console.WriteLine();
+//var elementsList = HtmlElement.FindElementsBySelector(htmlTree, selector);
+//Console.WriteLine("--------------------------------------------------------------");
+//Console.WriteLine("The list of" + elementsList.ToList().Count() + " elements found:");
+//foreach (var e in elementsList)
+//{
+//    PrintHtmlElement(e);
+//}
+//Console.WriteLine("--------------------------------------------------------------");
+////Console.WriteLine(selector);
 Console.WriteLine("**********");
 Console.WriteLine("Tag Name: " + selector.TagName);
 Console.WriteLine("ID: " + selector.Id);
