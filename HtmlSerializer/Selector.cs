@@ -14,7 +14,12 @@ namespace HtmlSerializer
         public List<string> Classes { get; set; } 
         public Selector Parent { get; set; }
         public Selector Child { get; set; }
-      
+
+        public Selector()
+        {
+            Classes = new List<string>();
+        }
+
         public static Selector FromQueryString(string queryString)
         {
             var selectors = queryString.Split(' ');
@@ -66,8 +71,6 @@ namespace HtmlSerializer
             return rootSelector;
         }
 
-
-
         public override string ToString()
         {
             var result = TagName ?? string.Empty;
@@ -85,10 +88,6 @@ namespace HtmlSerializer
             return result;
         }
 
-        public Selector()
-        {
-            Classes = new List<string>();
-        }
 
 
        

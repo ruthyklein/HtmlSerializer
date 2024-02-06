@@ -3,20 +3,6 @@ using System;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 
-//loading an html page:
-static async Task<string> Load(string url)
-{
-    HttpClient client = new HttpClient();
-    var response = await client.GetAsync(url);
-    var html = await response.Content.ReadAsStringAsync();
-    return html;
-}
-var html = await Load("https://rubybot.co.il/he/features/chat");
-var cleanHtml = new Regex("\\s+").Replace(html, " ");
-var htmlLines = new Regex("<(.*?)>").Split(cleanHtml).Where(s => s.Length > 0).ToList();
-var htmlTree = BuildHtmlTree(htmlLines);
-
-// The HTML tree is now constructed, you can manipulate or traverse it as needed
 static HtmlElement BuildHtmlTree(List<string> htmlLines)
 {
     var root = new HtmlElement();
@@ -88,87 +74,89 @@ static HtmlElement BuildHtmlTree(List<string> htmlLines)
 
     return root;
 }
-//static void PrintHtmlElement(HtmlElement element, string indent = "")
-//{
-//    Console.Write($"{indent}<{element.Name}>");
+static void PrintHtmlTree(HtmlElement element, string indent = "")
+{
+    Console.Write($"{indent}<{element.Name}");
 
-//    if (!string.IsNullOrEmpty(element.Id))
-//    {
-//        Console.Write($" id=\"{element.Id}\"");
-//    }
+    //if (!string.IsNullOrEmpty(element.Id))
+    //{
+    //    Console.Write($" id=\"{element.Id}\"");
+    //}
 
-//    if (element.Classes.Any())
-//    {
-//        Console.Write($" class=\"{string.Join(" ", element.Classes)}\"");
-//    }
+    //if (element.Classes.Any())
+    //{
+    //    Console.Write($" class=\"{string.Join(" ", element.Classes)}\"");
+    //}
 
-//    if (element.Attributes.Any())
-//    {
-//        Console.Write($" {string.Join(" ", element.Attributes)}");
-//    }
-//    Console.WriteLine($"{indent}</{element.Name}>");
-//}
-//static void PrintHtmlTree(HtmlElement element, string indent = "")
-//{
-//    Console.Write($"{indent}<{element.Name}");
-
-//    if (!string.IsNullOrEmpty(element.Id))
-//    {
-//        Console.Write($" id=\"{element.Id}\"");
-//    }
-
-//    if (element.Classes.Any())
-//    {
-//        Console.Write($" class=\"{string.Join(" ", element.Classes)}\"");
-//    }
-
-//    if (element.Attributes.Any())
-//    {
-//        Console.Write($" {string.Join(" ", element.Attributes)}");
-//    }
+    //if (element.Attributes.Any())
+    //{
+    //    Console.Write($" {string.Join(" ", element.Attributes)}");
+    //}
 
 
-//    Console.WriteLine($"{indent}</{element.Name}>");
+    //Console.WriteLine($"{indent}</{element.Name}>");
 
-//    // Console.WriteLine(">");
+    Console.WriteLine(">");
 
-//    if (element.Children.Any())
-//    {
-//        foreach (var child in element.Children)
-//        {
-//            PrintHtmlTree(child, indent + "  ");
-//        }
-//    }
-//    //else if (!string.IsNullOrEmpty(element.InnerHtml))
-//    //{
-//    //    Console.WriteLine($"{indent}  {element.InnerHtml}");
-//    //}
+    if (element.Children.Any())
+    {
+        foreach (var child in element.Children)
+        {
+            PrintHtmlTree(child, indent + "  ");
+        }
+    }
+    //else if (!string.IsNullOrEmpty(element.InnerHtml))
+    //{
+    //    Console.WriteLine($"{indent}  {element.InnerHtml}");
+    //}
 
-//    //Console.WriteLine($"{indent}</{element.Name}>");
-//}
+    //Console.WriteLine($"{indent}</{element.Name}>");
+}
+static void PrintHtmlElement(HtmlElement element, string indent = "")
+{
+    Console.Write($"{indent}<{element.Name}");
+
+    if (!string.IsNullOrEmpty(element.Id))
+    {
+        Console.Write($" id=\"{element.Id}\"");
+    }
+
+    if (element.Classes.Any())
+    {
+        Console.Write($" class=\"{string.Join(" ", element.Classes)}\"");
+    }
+
+    if (element.Attributes.Any())
+    {
+        Console.Write($" {string.Join(" ", element.Attributes)}");
+    }
+    Console.WriteLine($"{indent}</{element.Name}>");
+}
+static async Task<string> Load(string url)
+{
+    HttpClient client = new HttpClient();
+    var response = await client.GetAsync(url);
+    var html = await response.Content.ReadAsStringAsync();
+    return html;
+}
 
 
-//Console.WriteLine("HTML Tree construction completed.");
-////PrintHtmlTree(htmlTree);
-//Console.WriteLine("-------------9----------------------------------------------");
-string queryString0 = "div #RT .MuiBox-root .Mui";//31 results
-//string queryString1 = "button .MuiButtonBase-root";//5 results
-//string queryString2 = "div.layout-wrapper";//only 1 result
+var html = await Load("https://learn.malkabruk.co.il");
+var cleanHtml = new Regex("\\s+").Replace(html," ");
+var htmlLines = new Regex("<(.*?)>").Split(cleanHtml).Where(s => s.Length > 0).ToList();
+var htmlTree = BuildHtmlTree(htmlLines);
 
-var selector = Selector.FromQueryString(queryString0);
-Console.WriteLine();
-//var elementsList = HtmlElement.FindElementsBySelector(htmlTree, selector);
-//Console.WriteLine("--------------------------------------------------------------");
-//Console.WriteLine("The list of" + elementsList.ToList().Count() + " elements found:");
-//foreach (var e in elementsList)
-//{
-//    PrintHtmlElement(e);
-//}
-//Console.WriteLine("--------------------------------------------------------------");
-////Console.WriteLine(selector);
-Console.WriteLine("**********");
-Console.WriteLine("Tag Name: " + selector.TagName);
-Console.WriteLine("ID: " + selector.Id);
-Console.WriteLine("Classes: " + string.Join(", ", selector.Classes));
-Console.ReadLine();
+
+Console.WriteLine("HTML Tree construction completed.");
+string s = "div#profile-menu";
+Selector selector = Selector.FromQueryString(s);
+//List <HtmlElement> list = htmlTree.FindElementsBySelector(selector).ToList();
+var all = htmlTree.FindElementsBySelector(selector);
+Console.WriteLine("match element: " + all.ToList().Count());
+foreach (var element in all)
+{
+    PrintHtmlElement(element);
+}
+
+
 

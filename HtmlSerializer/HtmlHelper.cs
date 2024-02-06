@@ -20,18 +20,6 @@ namespace HtmlSerializer
             HtmlVoidTags = JsonSerializer.Deserialize<string[]>(File.ReadAllText("Files/HtmlVoidTags.json"));
         }
 
-        //private HtmlHelper()
-        //{
-
-        //    HtmlTags = LoadTagsFromFile("Files\\HtmlTags.json");
-        //    HtmlVoidTags = LoadTagsFromFile("Files\\HtmlVoidTags.json");
-
-        //}
-        //private string[] LoadTagsFromFile(string filePath)
-        //{
-        //    string jsonContent = File.ReadAllText(filePath);
-        //    return JsonSerializer.Deserialize<string[]>(jsonContent);
-        //}
 
     }
 }
