@@ -3,7 +3,7 @@ using System;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 
-static HtmlElement BuildHtmlTree(List<string> htmlLines)
+static HtmlElement Serialize(List<string> htmlLines)
 {
     var root = new HtmlElement();
     var currentElement = root;
@@ -115,17 +115,6 @@ static void PrintHtmlTree(HtmlElement element, string indent = "")
 static void PrintHtmlElement(HtmlElement element, string indent = "")
 {
     Console.Write($"{indent}<{element.Name}");
-
-    if (!string.IsNullOrEmpty(element.Id))
-    {
-        Console.Write($" id=\"{element.Id}\"");
-    }
-
-    if (element.Classes.Any())
-    {
-        Console.Write($" class=\"{string.Join(" ", element.Classes)}\"");
-    }
-
     if (element.Attributes.Any())
     {
         Console.Write($" {string.Join(" ", element.Attributes)}");
@@ -140,22 +129,35 @@ static async Task<string> Load(string url)
     return html;
 }
 
-
-var html = await Load("https://learn.malkabruk.co.il");
-var cleanHtml = new Regex("\\s+").Replace(html," ");
+//loading an html page:
+var html = await Load("https://forum.netfree.link/category/1/%D7%94%D7%9B%D7%A8%D7%96%D7%95%D7%AA");
+var cleanHtml = new Regex("\\s+").Replace(html, " ");
 var htmlLines = new Regex("<(.*?)>").Split(cleanHtml).Where(s => s.Length > 0).ToList();
-var htmlTree = BuildHtmlTree(htmlLines);
 
+//Build the tree:
+var htmlTree = Serialize(htmlLines);
 
-Console.WriteLine("HTML Tree construction completed.");
-string s = "div#profile-menu";
-Selector selector = Selector.FromQueryString(s);
-//List <HtmlElement> list = htmlTree.FindElementsBySelector(selector).ToList();
-var all = htmlTree.FindElementsBySelector(selector);
-Console.WriteLine("match element: " + all.ToList().Count());
-foreach (var element in all)
+//queryStrings:
+string queryString1 = "a i.fa";//45 results
+string queryString2 = "nav#menu.slideout-menu";//only 1 result
+string queryString3 = "div .category";//only 1 result
+
+//selector:
+var selector = Selector.FromQueryString(queryString2);
+var elementsList = htmlTree.FindElementsBySelector(selector);
+
+//Print the elements:
+Console.WriteLine("List of " + elementsList.ToList().Count() + " elements found !!");
+foreach (var element in elementsList)
 {
+    Console.WriteLine("My ancestors are:");
+    foreach (var father in element.Ancestors().ToList())
+    {
+        Console.Write("  " + father.Name);
+    }
+    Console.WriteLine();
     PrintHtmlElement(element);
+    Console.WriteLine("--------------------------------------------------------");
 }
 
 
