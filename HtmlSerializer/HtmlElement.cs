@@ -24,7 +24,7 @@ namespace HtmlSerializer
             Attributes = new List<string>();
             Children = new List<HtmlElement>();
         }
-
+        //הפונקציה רצה על כל העץ מהאלמנט שעליו היא מופעלת ומטה, ומחזירה רשימה שטוחה של כל צאצאי האלמנט
         public IEnumerable<HtmlElement> Descendants()
         {
             var queue = new Queue<HtmlElement>();
@@ -41,6 +41,7 @@ namespace HtmlSerializer
                 }
             }
         }
+        // הפונקציה רצה על כל כל העץ מהאלמנט שעליו היא מופעלת ומעלה, ומחזירה רשימה שטוחה של כל אבות האלמנט
         public IEnumerable<HtmlElement> Ancestors()
         {
             var currentElement = this.Parent;
@@ -68,7 +69,7 @@ public static class HtmlElementExtensions
             results.Add(element);
             return;
         }
-        //// Check if there is a next selector in the sequence
+        // Check if there is a next selector in the sequence
         // Continue recursively on the filtered descendants with the next selector
         var filteredDescendants = element.Descendants().Where(descendant => descendant.MatchesSelector(selector));
         foreach (var filteredDescendant in filteredDescendants)
@@ -83,6 +84,5 @@ public static class HtmlElementExtensions
             (string.IsNullOrEmpty(selector.Id) || element.Id == selector.Id) &&
             (selector.Classes.All(cls => element.Classes.Contains(cls)));
     }
-
 }
 

@@ -55,7 +55,7 @@ static HtmlElement Serialize(List<string> htmlLines)
             newElement.Parent = currentElement;
             currentElement.Children.Add(newElement);
 
-            // Check if self-closing tag
+            // Check if self-closing tag for ex:<img/>  </div><div>
             if (line.EndsWith("/") || HtmlHelper.Instance.HtmlVoidTags.Contains(firstWord))
             {
                 currentElement = newElement.Parent;
@@ -73,44 +73,6 @@ static HtmlElement Serialize(List<string> htmlLines)
     }
 
     return root;
-}
-static void PrintHtmlTree(HtmlElement element, string indent = "")
-{
-    Console.Write($"{indent}<{element.Name}");
-
-    //if (!string.IsNullOrEmpty(element.Id))
-    //{
-    //    Console.Write($" id=\"{element.Id}\"");
-    //}
-
-    //if (element.Classes.Any())
-    //{
-    //    Console.Write($" class=\"{string.Join(" ", element.Classes)}\"");
-    //}
-
-    //if (element.Attributes.Any())
-    //{
-    //    Console.Write($" {string.Join(" ", element.Attributes)}");
-    //}
-
-
-    //Console.WriteLine($"{indent}</{element.Name}>");
-
-    Console.WriteLine(">");
-
-    if (element.Children.Any())
-    {
-        foreach (var child in element.Children)
-        {
-            PrintHtmlTree(child, indent + "  ");
-        }
-    }
-    //else if (!string.IsNullOrEmpty(element.InnerHtml))
-    //{
-    //    Console.WriteLine($"{indent}  {element.InnerHtml}");
-    //}
-
-    //Console.WriteLine($"{indent}</{element.Name}>");
 }
 static void PrintHtmlElement(HtmlElement element, string indent = "")
 {
@@ -138,13 +100,21 @@ var htmlLines = new Regex("<(.*?)>").Split(cleanHtml).Where(s => s.Length > 0).T
 var htmlTree = Serialize(htmlLines);
 
 //queryStrings:
-string queryString1 = "a i.fa";//45 results
+string queryString1 = "nav.navbar div.container ";//45 results
 string queryString2 = "nav#menu.slideout-menu";//only 1 result
 string queryString3 = "div .category";//only 1 result
+string queryString4 = "ul.nav.navbar-nav";// 4 result
 
 //selector:
-var selector = Selector.FromQueryString(queryString2);
+var selector = Selector.FromQueryString(queryString4);
 var elementsList = htmlTree.FindElementsBySelector(selector);
+
+//descandent...
+var root = Serialize(htmlLines);
+var ancestors = root.Ancestors().ToList();
+var descendants = root.Descendants().ToList();
+
+
 
 //Print the elements:
 Console.WriteLine("List of " + elementsList.ToList().Count() + " elements found !!");
